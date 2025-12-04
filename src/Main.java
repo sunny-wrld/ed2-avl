@@ -18,6 +18,7 @@ public class Main {
         arvore.inserir(65);
         arvore.inserir(73);
         arvore.inserir(77);
+        arvore.inserir(99);
 
         System.out.println("Em ordem:");
         arvore.imprimir();
