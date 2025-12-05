@@ -1,10 +1,10 @@
 public class tad {
-    class Nodo {
+    class No {
         int chave;
-        Nodo esq, dir;
+        No esq, dir;
         int altura;
 
-        Nodo(int c) {
+        No(int c) {
             chave = c;
             altura = 1;
         }
@@ -12,20 +12,20 @@ public class tad {
 
     class AVL {
 
-        Nodo raiz;
+        No raiz;
 
-        int altura(Nodo p) {
+        int altura(No p) {
             if (p == null) return 0;
             return p.altura;
         }
 
-        int fb(Nodo p) {
+        int fb(No p) {
             return altura(p.esq) - altura(p.dir);
         }
 
-        Nodo rotDir(Nodo y) {
-            Nodo x = y.esq;
-            Nodo t2 = x.dir;
+        No rotDir(No y) {
+            No x = y.esq;
+            No t2 = x.dir;
             x.dir = y;
             y.esq = t2;
             y.altura = 1 + Math.max(altura(y.esq), altura(y.dir));
@@ -33,9 +33,9 @@ public class tad {
             return x;
         }
 
-        Nodo rotEsq(Nodo x) {
-            Nodo y = x.dir;
-            Nodo t2 = y.esq;
+        No rotEsq(No x) {
+            No y = x.dir;
+            No t2 = y.esq;
             y.esq = x;
             x.dir = t2;
             x.altura = 1 + Math.max(altura(x.esq), altura(x.dir));
@@ -43,8 +43,8 @@ public class tad {
             return y;
         }
 
-        Nodo inserirRec(Nodo p, int chave) {
-            if (p == null) return new Nodo(chave);
+        No inserirRec(No p, int chave) {
+            if (p == null) return new No(chave);
 
             if (chave < p.chave)
                 p.esq = inserirRec(p.esq, chave);
@@ -74,7 +74,7 @@ public class tad {
             raiz = inserirRec(raiz, chave);
         }
 
-        Nodo buscar(Nodo p, int chave) {
+        No buscar(No p, int chave) {
             if (p == null) return null;
             if (chave == p.chave) return p;
             if (chave < p.chave) return buscar(p.esq, chave);
@@ -85,12 +85,12 @@ public class tad {
             return buscar(raiz, chave) != null;
         }
 
-        Nodo menor(Nodo p) {
+        No menor(No p) {
             while (p.esq != null) p = p.esq;
             return p;
         }
 
-        Nodo removerRec(Nodo p, int chave) {
+        No removerRec(No p, int chave) {
             if (p == null) return null;
 
             if (chave < p.chave)
@@ -99,10 +99,10 @@ public class tad {
                 p.dir = removerRec(p.dir, chave);
             else {
                 if (p.esq == null || p.dir == null) {
-                    Nodo t = (p.esq != null) ? p.esq : p.dir;
+                    No t = (p.esq != null) ? p.esq : p.dir;
                     p = t;
                 } else {
-                    Nodo suc = menor(p.dir);
+                    No suc = menor(p.dir);
                     p.chave = suc.chave;
                     p.dir = removerRec(p.dir, suc.chave);
                 }
@@ -131,7 +131,7 @@ public class tad {
             raiz = removerRec(raiz, chave);
         }
 
-        void emOrdem(Nodo p) {
+        void emOrdem(No p) {
             if (p == null) return;
             emOrdem(p.esq);
             System.out.print(p.chave + " ");
