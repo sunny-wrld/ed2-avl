@@ -2,8 +2,7 @@ package avl;
 
 import java.util.Scanner;
 
-public class
-TADAgenda {
+public class TADAgenda {
     private final ArvoreAVL agenda;
     private final Scanner scanner;
 
@@ -53,7 +52,6 @@ TADAgenda {
 
             agenda.inserir(compromisso);
             System.out.println("\nCompromisso adicionado");
-
         } catch (Exception e) {
             System.out.println("\nErro ao adicionar compromisso");
             scanner.nextLine();
@@ -84,7 +82,6 @@ TADAgenda {
             } else {
                 System.out.println("\nCompromisso nao encontrado.");
             }
-
         } catch (Exception e) {
             System.out.println("\nErro ao remover compromisso.");
             scanner.nextLine();
@@ -115,7 +112,6 @@ TADAgenda {
             } else {
                 System.out.println("\nNenhum compromisso encontrado");
             }
-
         } catch (Exception e) {
             System.out.println("\nErro ao buscar compromisso.");
             scanner.nextLine();
@@ -158,7 +154,6 @@ TADAgenda {
             long timestampFim = converterParaTimestamp(anoFim, mesFim, diaFim, horaFim, minFim);
 
             agenda.listarIntervalo(timestampInicio, timestampFim);
-
         } catch (Exception e) {
             System.out.println("\nErro.");
             scanner.nextLine();
@@ -233,10 +228,25 @@ TADAgenda {
                 scanner.nextLine();
                 opcao = -1;
             }
-
         } while (opcao != 0);
 
         scanner.close();
+    }
+
+    public void inserir(Compromisso compromisso) {
+        agenda.inserir(compromisso);
+    }
+
+    public Compromisso buscar(long timestamp) {
+        return agenda.buscar(timestamp);
+    }
+
+    public void remover(long timestamp) {
+        agenda.remover(timestamp);
+    }
+
+    public int getNumRotacoes() {
+        return agenda.getNumRotacoes();
     }
 
     public static void main(String[] args) {
@@ -244,4 +254,3 @@ TADAgenda {
         sistema.executar();
     }
 }
-

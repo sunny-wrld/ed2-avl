@@ -1,18 +1,18 @@
 package redblack;
 
-public class No {
-    int chave;
-    No esquerda, direita, p;
-    boolean cor;
-
-    public No(int chave) {
-        this.chave = chave;
-        this.cor = true;
-    }
-
-    public No(int chave, boolean cor) {
+public final class No {
+    public int chave;
+    public Cor cor;
+    public No esquerda;
+    public No direita;
+    public No pai;
+    public No(int chave, Cor cor) {
         this.chave = chave;
         this.cor = cor;
+    }
+    @Override
+    public String toString() {
+        return chave + "(" + (cor == Cor.vermelho ? "R" : "B") + ")";
     }
 }
 
