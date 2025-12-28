@@ -249,6 +249,14 @@ public class TADAgenda {
         return agenda.getNumRotacoes();
     }
 
+    public int getNumRotacoesInsercao() {
+        return agenda.getNumRotacoesInsercao();
+    }
+
+    public int getNumRotacoesRemocao() {
+        return agenda.getNumRotacoesRemocao();
+    }
+
     public static void main(String[] args) {
         TADAgenda sistema = new TADAgenda();
         sistema.executar();

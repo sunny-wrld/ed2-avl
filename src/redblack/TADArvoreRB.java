@@ -4,8 +4,9 @@ public class TADArvoreRB {
 
     private final No NIL = new No(0, Cor.preto);
     private No raiz = NIL;
-    private long rotacoesEsquerda = 0;
-    private long rotacoesDireita = 0;
+    private long rotacoesInsercao = 0;
+    private long rotacoesRemocao = 0;
+    private boolean emRemocao = false;
 
     public TADArvoreRB() {
         NIL.esquerda = NIL;
@@ -13,14 +14,32 @@ public class TADArvoreRB {
         NIL.pai = NIL;
     }
 
-    public No getRaiz() { return raiz; }
-    public No getNIL() { return NIL; }
-    public long getRotacoesEsquerda() { return rotacoesEsquerda; }
-    public long getRotacoesDireita() { return rotacoesDireita; }
-    public long getRotacoesTotal() { return rotacoesEsquerda + rotacoesDireita; }
+    public No getRaiz() {
+        return raiz;
+    }
+
+    public No getNIL() {
+        return NIL;
+    }
+
+    public long getRotacoesInsercao() {
+        return rotacoesInsercao;
+    }
+
+    public long getRotacoesRemocao() {
+        return rotacoesRemocao;
+    }
+
+    public long getRotacoesTotal() {
+        return rotacoesInsercao + rotacoesRemocao;
+    }
 
     private void rotacaoEsquerda(No x) {
-        rotacoesEsquerda++;
+        if (emRemocao) {
+            rotacoesRemocao++;
+        } else {
+            rotacoesInsercao++;
+        }
         No y = x.direita;
         x.direita = y.esquerda;
         if (y.esquerda != NIL) {
@@ -39,7 +58,11 @@ public class TADArvoreRB {
     }
 
     private void rotacaoDireita(No y) {
-        rotacoesDireita++;
+        if (emRemocao) {
+            rotacoesRemocao++;
+        } else {
+            rotacoesInsercao++;
+        }
         No x = y.esquerda;
         y.esquerda = x.direita;
         if (x.direita != NIL) {
@@ -60,8 +83,14 @@ public class TADArvoreRB {
     public No buscar(int chave) {
         No x = raiz;
         while (x != NIL) {
-            if (chave == x.chave) return x;
-            x = (chave < x.chave) ? x.esquerda : x.direita;
+            if (chave == x.chave) {
+                return x;
+            }
+            if (chave < x.chave) {
+                x = x.esquerda;
+            } else {
+                x = x.direita;
+            }
         }
         return NIL;
     }
@@ -70,12 +99,16 @@ public class TADArvoreRB {
         No z = new No(chave, Cor.vermelho);
         z.esquerda = NIL;
         z.direita = NIL;
+        z.pai = NIL;
         No y = NIL;
         No x = raiz;
         while (x != NIL) {
             y = x;
-            if (z.chave < x.chave) x = x.esquerda;
-            else x = x.direita;
+            if (z.chave < x.chave) {
+                x = x.esquerda;
+            } else {
+                x = x.direita;
+            }
         }
         z.pai = y;
         if (y == NIL) {
@@ -125,12 +158,13 @@ public class TADArvoreRB {
             }
         }
         raiz.cor = Cor.preto;
-        raiz.pai = NIL;
     }
 
     public boolean remover(int chave) {
         No z = buscar(chave);
-        if (z == NIL) return false;
+        if (z == NIL) {
+            return false;
+        }
         rbRemove(z);
         return true;
     }
@@ -147,11 +181,14 @@ public class TADArvoreRB {
     }
 
     private No treeMinimum(No x) {
-        while (x.esquerda != NIL) x = x.esquerda;
+        while (x.esquerda != NIL) {
+            x = x.esquerda;
+        }
         return x;
     }
 
     private void rbRemove(No z) {
+        emRemocao = true;
         No y = z;
         Cor yCorOriginal = y.cor;
         No x;
@@ -180,10 +217,8 @@ public class TADArvoreRB {
         if (yCorOriginal == Cor.preto) {
             rbRemoveFixup(x);
         }
-        if (raiz != NIL) {
-            raiz.cor = Cor.preto;
-            raiz.pai = NIL;
-        }
+        raiz.cor = Cor.preto;
+        emRemocao = false;
     }
 
     private void rbRemoveFixup(No x) {
@@ -242,22 +277,33 @@ public class TADArvoreRB {
     }
 
     public void verificarIntegridade() {
-        if (raiz == NIL) return;
+        if (raiz == NIL) {
+            return;
+        }
         if (raiz.cor != Cor.preto) {
-            throw new IllegalStateException("Integridade falhou: raiz não é PRETA.");
+            throw new IllegalStateException("Violação: A raiz deve ser PRETA");
         }
         if (NIL.cor != Cor.preto) {
-            throw new IllegalStateException("Integridade falhou: NIL não é PRETA.");
+            throw new IllegalStateException("Violação: T.Nil deve ser PRETO");
         }
-        int bh = verificarRec(raiz);
+        verificarAlturaPreta(raiz);
     }
 
-    private int verificarRec(No no) {
-        if (no == NIL) return 0;
-        int left = verificarRec(no.esquerda);
-        int right = verificarRec(no.direita);
-        if (left != right) throw new IllegalStateException("Altura preta inconsistente");
-        return left + (no.cor == Cor.preto ? 1 : 0);
+    private int verificarAlturaPreta(No no) {
+        if (no == NIL) {
+            return 0;
+        }
+        if (no.cor == Cor.vermelho) {
+            if (no.esquerda.cor == Cor.vermelho || no.direita.cor == Cor.vermelho) {
+                throw new IllegalStateException("Violação: Nó vermelho com filho vermelho");
+            }
+        }
+        int alturaEsquerda = verificarAlturaPreta(no.esquerda);
+        int alturaDireita = verificarAlturaPreta(no.direita);
+        if (alturaEsquerda != alturaDireita) {
+            throw new IllegalStateException("Violação: Altura preta inconsistente");
+        }
+        return alturaEsquerda + (no.cor == Cor.preto ? 1 : 0);
     }
 
     public String emOrdem() {
@@ -267,9 +313,11 @@ public class TADArvoreRB {
     }
 
     private void emOrdemRec(No no, StringBuilder sb) {
-        if (no == NIL) return;
+        if (no == NIL) {
+            return;
+        }
         emOrdemRec(no.esquerda, sb);
-        sb.append(no.chave).append("(").append(no.cor == Cor.vermelho ? "R" : "B").append(") ");
+        sb.append(no.chave).append("(").append(no.cor == Cor.vermelho ? "V" : "P").append(") ");
         emOrdemRec(no.direita, sb);
     }
 }

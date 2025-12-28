@@ -6,6 +6,9 @@ import java.util.List;
 public class ArvoreAVL {
 	private No raiz;
 	private int numRotacoes = 0;
+	private int numRotacoesInsercao = 0;
+	private int numRotacoesRemocao = 0;
+	private boolean emRemocao = false;
 
 	public ArvoreAVL() {
 		this.raiz = null;
@@ -28,6 +31,10 @@ public class ArvoreAVL {
 	}
 
 	private No rotacaoDireita(No p) {
+		if (emRemocao)
+			numRotacoesRemocao++;
+		else
+			numRotacoesInsercao++;
 		numRotacoes++;
 		No q = p.getEsquerda();
 		No temp = q.getDireita();
@@ -42,6 +49,10 @@ public class ArvoreAVL {
 	}
 
 	private No rotacaoEsquerda(No p) {
+		if (emRemocao)
+			numRotacoesRemocao++;
+		else
+			numRotacoesInsercao++;
 		numRotacoes++;
 		No q = p.getDireita();
 		No temp = q.getEsquerda();
@@ -81,6 +92,7 @@ public class ArvoreAVL {
 	}
 
 	public void inserir(Compromisso compromisso) {
+		emRemocao = false;
 		raiz = inserirRec(raiz, compromisso);
 	}
 
@@ -103,7 +115,9 @@ public class ArvoreAVL {
 	}
 
 	public void remover(long timestamp) {
+		emRemocao = true;
 		raiz = removerRec(raiz, timestamp);
+		emRemocao = false;
 	}
 
 	private No removerRec(No no, long timestamp) {
@@ -232,5 +246,13 @@ public class ArvoreAVL {
 
 	public int getNumRotacoes() {
 		return numRotacoes;
+	}
+
+	public int getNumRotacoesInsercao() {
+		return numRotacoesInsercao;
+	}
+
+	public int getNumRotacoesRemocao() {
+		return numRotacoesRemocao;
 	}
 }
