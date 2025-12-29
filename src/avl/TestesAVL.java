@@ -36,7 +36,6 @@ public class TestesAVL {
 
     private static void testeInsercao(TADAgenda avl, int[] dados) {
         long inicio = System.nanoTime();
-        boolean ok = true;
         for (int v : dados) {
             avl.inserir(new Compromisso(v, ""));
         }
@@ -46,7 +45,7 @@ public class TestesAVL {
         System.out.println("Tempo de inserção: " + formatarTempo(tempoInsercao));
         System.out.println("Rotações (inserção): " + avl.getNumRotacoesInsercao());
         System.out.println("Média por inserção: " + (tempoInsercao / dados.length) + " ns");
-        System.out.println("Status: " + (ok ? "OK" : "ERRO"));
+        System.out.println("Status: OK");
     }
 
     private static void testeBusca(TADAgenda avl, int[] dados) {
@@ -57,8 +56,16 @@ public class TestesAVL {
         long inicio = System.nanoTime();
         int encontrados = 0;
         int naoEncontrados = 0;
-        for (int v : buscaExistentes) if (avl.buscar(v) != null) encontrados++;
-        for (int v : buscaInexistentes) if (avl.buscar(v) == null) naoEncontrados++;
+        for (int v : buscaExistentes) {
+            if (avl.buscar(v) != null) {
+                encontrados++;
+            }
+        }
+        for (int v : buscaInexistentes) {
+            if (avl.buscar(v) == null) {
+                naoEncontrados++;
+            }
+        }
         long fim = System.nanoTime();
         long tempoBusca = fim - inicio;
         System.out.println("Buscas existentes: " + encontrados + "/" + buscaExistentes.size());
@@ -72,7 +79,6 @@ public class TestesAVL {
         int qtdRemover = dados.length / 10;
         long inicio = System.nanoTime();
         int removidos = 0;
-        boolean ok = true;
         for (int i = 0; i < qtdRemover; i++) {
             avl.remover(dados[i]);
             removidos++;
@@ -84,16 +90,18 @@ public class TestesAVL {
         System.out.println("Tempo de remoção: " + formatarTempo(tempoRemocao));
         System.out.println("Rotações (remoção): " + avl.getNumRotacoesRemocao());
         System.out.println("Média por remoção: " + (tempoRemocao / removidos) + " ns");
-        System.out.println("Status: " + (ok ? "OK" : "ERRO"));
+        System.out.println("Status: OK");
     }
 
     private static String formatarTempo(long nanos) {
         if (nanos >= 1000000) {
             return String.format("%.3f ms", nanos / 1000000.0);
-        } else if (nanos >= 1000) {
-            return String.format("%.3f μs", nanos / 1000.0);
         } else {
-            return nanos + " ns";
+            if (nanos >= 1000) {
+                return String.format("%.3f us", nanos / 1000.0);
+            } else {
+                return nanos + " ns";
+            }
         }
     }
 }

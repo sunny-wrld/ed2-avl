@@ -63,8 +63,16 @@ public class TestesRB {
         long inicio = System.nanoTime();
         int encontrados = 0;
         int naoEncontrados = 0;
-        for (int v : buscaExistentes) if (arvore.buscar(v) != arvore.getNIL()) encontrados++;
-        for (int v : buscaInexistentes) if (arvore.buscar(v) == arvore.getNIL()) naoEncontrados++;
+        for (int v : buscaExistentes) {
+            if (arvore.buscar(v) != arvore.getNIL()) {
+                encontrados++;
+            }
+        }
+        for (int v : buscaInexistentes) {
+            if (arvore.buscar(v) == arvore.getNIL()) {
+                naoEncontrados++;
+            }
+        }
         long fim = System.nanoTime();
         long tempoBusca = fim - inicio;
         System.out.println("Buscas existentes: " + encontrados + "/" + buscaExistentes.size());
@@ -96,10 +104,12 @@ public class TestesRB {
     private static String formatarTempo(long nanos) {
         if (nanos >= 1000000) {
             return String.format("%.3f ms", nanos / 1000000.0);
-        } else if (nanos >= 1000) {
-            return String.format("%.3f μs", nanos / 1000.0);
         } else {
-            return nanos + " ns";
+            if (nanos >= 1000) {
+                return String.format("%.3f us", nanos / 1000.0);
+            } else {
+                return nanos + " ns";
+            }
         }
     }
 }
